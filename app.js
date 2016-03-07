@@ -73,7 +73,7 @@ function doLogin(req, res){
   },function(error) {
     //登录失败，跳转到登录页面
     //res.redirect('/login');
-	res.redirect('/test');
+	res.render('login');
   });
 }
 app.get('/login', doLogin);

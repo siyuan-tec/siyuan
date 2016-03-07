@@ -1,0 +1,218 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="keywords" content="jquery,ui,easy,easyui,web">
+	<meta name="description" content="easyui help you build your web page easily!">
+	<title>思源公益</title>
+	
+	<!-- leancloud -->
+	<script src="https://cdn1.lncld.net/static/js/av-mini-0.6.4.js"></script>
+	
+	<link rel="stylesheet" type="text/css" href="http://www.jeasyui.net/Public/js/easyui/themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="http://www.jeasyui.net/Public/js/easyui/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="http://www.jeasyui.net/Public/js/easyui/demo/demo.css">
+	<style type="text/css">
+		#fm{
+			margin:0;
+			padding:10px 30px;
+		}
+		.ftitle{
+			font-size:14px;
+			font-weight:bold;
+			color:#666;
+			padding:5px 0;
+			margin-bottom:10px;
+			border-bottom:1px solid #ccc;
+		}
+		.fitem{
+			margin-bottom:5px;
+		}
+		.fitem label{
+			display:inline-block;
+			width:80px;
+		}
+	</style>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.min.js"></script>
+	<script type="text/javascript" src="http://www.jeasyui.net/Public/js/easyui/jquery.easyui.min.js"></script>
+	
+	<script>
+		var result_cache = new Array();
+		var opp = 0; // 0:add 1:edit
+		
+		//点击添加按钮打开对话框
+		function add(){
+			$('#dlg').dialog('open').dialog('setTitle','添加志愿者');
+			$('#fm').form('clear');
+			opp = 0;
+		}
+
+		//点击修改按钮时打开对话框
+		function edit(){
+			opp = 1;
+			var row = $('#dg').datagrid('getSelected');
+			if (row){
+				$('#dlg').dialog('open').dialog('setTitle','修改信息');
+				$('#fm').form('load',row);
+			}
+			// 填充信息
+			document.getElementById("name").value = row.name;
+			document.getElementById("school").value = row.school;
+			document.getElementById("email").value = row.email;
+			document.getElementById("phone").value = row.phone;
+
+		}
+
+		
+		//点击删除按钮
+		function remove(){
+			var row = $('#dg').datagrid('getSelected');
+			$.post("/remove-volunteer",
+				{
+					"id":row.id
+				},
+				function(data,status){
+					
+				});
+			
+		}
+
+		//点击保存插入数据
+		function save(){
+			if(opp == 0){
+				var input_name = document.getElementById("query_input_name").value;
+				$.post("/add-volunteer",
+				{
+					"name":document.getElementById("name").value,
+					"school":document.getElementById("school").value,
+					"email":document.getElementById("email").value,
+					"phone":document.getElementById("phone").value
+				},
+				function(data,status){
+					
+				});
+
+				$('#dlg').dialog('close');		// close the dialog
+				$('#dg').datagrid('reload');	// reload the user data
+			}else{
+				var row = $('#dg').datagrid('getSelected');
+				var id = row.id;
+				$.post("/update-volunteer",
+				{
+					"id":id,
+					"name":document.getElementById("name").value,
+					"school":document.getElementById("school").value,
+					"email":document.getElementById("email").value,
+					"phone":document.getElementById("phone").value
+				},
+				function(data,status){
+					if(status=="success"){
+						$('#dlg').dialog('close');
+						$('#dg').datagrid('loadData', { total: 0, rows: [] });
+					}
+				});
+			}
+		}
+		
+		function queryByName(){
+			var input_name = document.getElementById("query_input_name").value;
+			$.post("/query-name",
+			{
+				"name":input_name
+			},
+			function(data,status){
+				//先清空数据
+				$('#dg').datagrid('loadData', { total: 0, rows: [] });
+				for (var i = 0; i < data.length; i++) {
+					var object = data[i];
+					result_cache[i] = object;
+					$('#dg').datagrid('insertRow',{
+						index: 0,	
+						row: {
+							name:object.name,
+							school:object.school,
+							email:object.email,
+							phone:object.phone,
+							id:object.id
+							//photo:'"' + object.get('photo') + '"'
+						}
+					});
+				}
+				
+			});
+			
+			
+			//document.getElementById("query_by_name").submit();
+		}
+		
+	</script>
+</head>
+<body>
+	<h2> </h2>
+	<h1>志愿者信息库</h1>
+
+	
+	<!-- 主界面  -->
+	<table id="dg" title="志愿者信息" align="center"
+			class="easyui-datagrid" style="width:100%;height:80%"
+			pagination="true" toolbar="#toolbar"
+			fitColumns="true" singleSelect="true">
+		<thead>
+			<tr>
+				<th field="name" width="50">姓名</th>
+				<th field="school" width="50">学院</th>
+				<th field="email" width="50">邮箱</th>
+				<th field="phone" width="50">手机</th>
+				<th field="photo" width="50" data-options="formatter:function(v){return '<img src='+v+'/>'}">照片</th>
+				<th field="id" style="display:none">id</th>
+			</tr>
+		</thead>	
+	</table>
+	<div id="toolbar">
+		<a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="add()">添加</a>
+		<a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="edit()">修改</a>
+		<a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="remove()">删除</a>
+		<a href="#" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="listAll()">显示全部</a>
+		<a href="#" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="all()">刷新</a>
+		<br/>
+		<form action="/query-name" method="POST" id="query_by_name">
+		<input id="query_input_name" name="query_input_name" type="text" />  
+		</form>
+		<a href="#" id="search" class="easyui-linkbutton" iconCls="icon-search" plain="true" onclick="queryByName()">搜索</a>
+		搜索示例：包伟铭
+	</div>
+	
+<!-- 添加条目窗口 -->
+<div id="dlg" class="easyui-dialog" style="width:400px;height:280px;padding:10px 20px"
+		closed="true" buttons="#dlg-buttons">
+	<div class="ftitle">志愿者信息</div>
+	<form action="/add-volunteer" method="POST"  id="fm">
+		<div class="fitem">
+			<label>姓名</label>
+			<input id="name" name="name" class="easyui-validatebox" required="true">
+		</div>
+		<div class="fitem">
+			<label>学院</label>
+			<input id="school" name="school" class="easyui-validatebox">
+		</div>
+		<div class="fitem">
+			<label>邮箱</label>
+			<input id="email" name="email" class="easyui-validatebox" validType="email">
+		</div>
+		<div class="fitem">
+			<label>手机</label>
+			<input id="phone" name="phone" validType="phone">
+		</div>
+		<div class="fitem">
+			<label>照片</label>
+			<input type="file" id="photo" name="photo">
+		</div>
+		
+	</form>
+</div>
+<div id="dlg-buttons">
+	<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="save()">保存</a>
+	<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')">取消</a>
+</div>
+
+</body>
+</html>

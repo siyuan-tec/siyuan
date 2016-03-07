@@ -1,0 +1,76 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="keywords" content="jquery,ui,easy,easyui,web">
+	<meta name="description" content="easyui help you build your web page easily!">
+	<title>思源公益</title>
+	
+	<!-- leancloud -->
+	<script src="https://cdn1.lncld.net/static/js/av-mini-0.6.4.js"></script>
+	
+	<link rel="stylesheet" type="text/css" href="http://www.jeasyui.net/Public/js/easyui/themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="http://www.jeasyui.net/Public/js/easyui/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="http://www.jeasyui.net/Public/js/easyui/demo/demo.css">
+	<style type="text/css">
+		#fm{
+			margin:0;
+			padding:10px 30px;
+		}
+		.ftitle{
+			font-size:14px;
+			font-weight:bold;
+			color:#666;
+			padding:5px 0;
+			margin-bottom:10px;
+			border-bottom:1px solid #ccc;
+		}
+		.fitem{
+			margin-bottom:5px;
+		}
+		.fitem label{
+			display:inline-block;
+			width:80px;
+		}
+	</style>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.min.js"></script>
+	<script type="text/javascript" src="http://www.jeasyui.net/Public/js/easyui/jquery.easyui.min.js"></script>
+	
+	<script>
+	function dologin(){
+		alert("get");
+		//document.getElementById("test").submit();
+		document.getElementById("login_form").submit();
+	}
+	
+	</script>
+</head>
+<body>
+<div id="w" class="easyui-window" title="请先登录"
+     data-options="modal:true,iconCls:'Lockgo',closable:false,minimizable:false,maximizable: false" 
+     style="width:400px;padding:20px 70px 20px 70px;">
+     <form action="/login" method="POST" id="login_form">
+        <div style="margin-bottom:10px">
+            <input class="easyui-textbox" name="logname" style="width:100%;height:30px;padding:12px"
+             data-options="prompt:'用户名',iconCls:'icon-man',iconWidth:38">
+        </div>
+        <div style="margin-bottom:20px">
+            <input class="easyui-textbox" name="logpass" type="password" style="width:100%;height:30px;
+            padding:12px" data-options="prompt:'登录密码',iconCls:'icon-lock',iconWidth:38">
+        </div>
+        <div style="margin-bottom:20px">
+            <input type="checkbox" checked="checked" id="logrem">
+            <span>Remember me</span>
+        </div>
+        <div>
+            <a href="javascript:;" onclick="dologin();return false" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" 
+            style="padding:5px 0px;width:100%;">
+                <span style="font-size:14px;">登录</span>
+            </a>    
+		</div>
+	</form>
+</div>
+
+
+
+</body>
+</html>

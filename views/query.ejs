@@ -34,10 +34,36 @@
 	</style>
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.min.js"></script>
 	<script type="text/javascript" src="http://www.jeasyui.net/Public/js/easyui/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="http://www.w3cschool.cc/try/jeasyui/datagrid-detailview.js"></script>
 	
 	<script>
 		var result_cache = new Array();
 		var opp = 0; // 0:add 1:edit
+		
+		// test
+		$(function(){
+			$('#dg').datagrid({
+				view: detailview,
+				detailFormatter:function(index,row){
+					return '<div class="ddv">ewr</div>';
+				},
+				onExpandRow: function(index,row){
+					var ddv = $(this).datagrid('getRowDetail',index).find('div.ddv');
+					ddv.panel({
+						border:false,
+						cache:true,
+						href:'http://www.baidu.com',
+						onLoad:function(){
+							$('#dg').datagrid('fixDetailRowHeight',index);
+							$('#dg').datagrid('selectRow',index);
+							$('#dg').datagrid('getRowDetail',index).find('form').form('load',row);
+						}
+					});
+					$('#dg').datagrid('fixDetailRowHeight',index);
+				}
+			});
+		});
+		
 		
 		//点击添加按钮打开对话框
 		function add(){
@@ -114,6 +140,7 @@
 		}
 		
 		function queryByName(){
+			
 			var input_name = document.getElementById("query_input_name").value;
 			$.post("/query-name",
 			{
@@ -139,8 +166,7 @@
 				}
 				
 			});
-			
-			
+
 			//document.getElementById("query_by_name").submit();
 		}
 		
@@ -159,11 +185,18 @@
 		<thead>
 			<tr>
 				<th field="name" width="50">姓名</th>
-				<th field="school" width="50">学院</th>
-				<th field="email" width="50">邮箱</th>
+				<th field="address" width="50">地址</th>
 				<th field="phone" width="50">手机</th>
+				<th field="email" width="50">邮箱</th>
+				<th field="qq" width="50">QQ</th>
+				<th field="WeChat" width="50">微信</th>
+				<th field="remark" width="50">备注</th>
+				<th field="school" width="50">学院</th>
+				
+				
+				
 				<th field="photo" width="50" data-options="formatter:function(v){return '<img src='+v+'/>'}">照片</th>
-				<th field="id" style="display:none">id</th>
+				<th field="id" style="display:none" hidden="true">id</th>
 			</tr>
 		</thead>	
 	</table>
@@ -171,7 +204,7 @@
 		<a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="add()">添加</a>
 		<a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="edit()">修改</a>
 		<a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="remove()">删除</a>
-		<a href="#" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="listAll()">显示全部</a>
+		<a href="#" class="easyui-linkbutton" iconCls="icon-tip" plain="true" onclick="listAll()">查看详情</a>
 		<a href="#" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="all()">刷新</a>
 		<br/>
 		<form action="/query-name" method="POST" id="query_by_name">
@@ -188,20 +221,37 @@
 	<form action="/add-volunteer" method="POST"  id="fm">
 		<div class="fitem">
 			<label>姓名</label>
-			<input id="name" name="name" class="easyui-validatebox" required="true">
+			<input id="name" name="name" class="easyui-textbox" required="true">
 		</div>
 		<div class="fitem">
-			<label>学院</label>
-			<input id="school" name="school" class="easyui-validatebox">
-		</div>
-		<div class="fitem">
-			<label>邮箱</label>
-			<input id="email" name="email" class="easyui-validatebox" validType="email">
+			<label>地址</label>
+			<input id="adress" name="address" class="easyui-textbox">
 		</div>
 		<div class="fitem">
 			<label>手机</label>
-			<input id="phone" name="phone" validType="phone">
+			<input id="phone" name="phone" class="easyui-textbox" validType="phone">
 		</div>
+		<div class="fitem">
+			<label>邮箱</label>
+			<input id="email" name="email" class="easyui-textbox" validType="email">
+		</div>
+		<div class="fitem">
+			<label>QQ</label>
+			<input id="qq" name="qq" class="easyui-textbox">
+		</div>
+		<div class="fitem">
+			<label>微信</label>
+			<input id="WeChat" name="WeChat" class="easyui-textbox">
+		</div>
+		<div class="fitem">
+			<label>备注</label>
+			<input id="remark" name="remark" class="easyui-textbox">
+		</div>
+		<div class="fitem">
+			<label>学院</label>
+			<input id="school" name="school" class="easyui-textbox">
+		</div>
+
 		<div class="fitem">
 			<label>照片</label>
 			<input type="file" id="photo" name="photo">

@@ -46,10 +46,14 @@ app.use(function(req, res, next) {
   d.run(next);
 });
 
-app.get('^/$|^/index$', function(req, res) {
-	res.render('index');
-});
-
+app.get('^/$|/index', function(req, res){
+	AV.initialize('YMYaJEC4RBmOHWTB5wieoI7L-gzGzoHsz', 'qH20zdz5ATGcqEQo9xOlwiba');
+	if (!req.AV.user) {
+    // 如果未登录，跳转到登录界面
+		res.render('login');
+	}
+	res.render("index");
+})
 
 app.get('/query', function(req, res) {
 	AV.initialize('YMYaJEC4RBmOHWTB5wieoI7L-gzGzoHsz', 'qH20zdz5ATGcqEQo9xOlwiba');
@@ -67,9 +71,8 @@ function doLogin(req, res){
 	AV.initialize('YMYaJEC4RBmOHWTB5wieoI7L-gzGzoHsz', 'qH20zdz5ATGcqEQo9xOlwiba');
 	AV.User.logIn(req.body.logname, req.body.logpass).then(function(user) {
     //登录成功，AV.Cloud.CookieSession 会自动将登录用户信息存储到 cookie
-    //跳转到profile页面。
     console.log('signin successfully: %j', user);
-    res.redirect('/query');
+    res.redirect('/index');
   },function(error) {
     //登录失败，跳转到登录页面
     //res.redirect('/login');
@@ -191,6 +194,8 @@ app.get('/test', function(req, res){
 // 可以将一类的路由单独保存在一个文件中
 app.use('/todos', todos);
 
+app.use(express.static('public'));
+
 // 如果任何路由都没匹配到，则认为 404
 // 生成一个异常让后面的 err handler 捕获
 app.use(function(req, res, next) {
@@ -198,6 +203,7 @@ app.use(function(req, res, next) {
   err.status = 404;
   next(err);
 });
+
 
 // error handlers
 

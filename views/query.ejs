@@ -52,11 +52,11 @@
 					ddv.panel({
 						border:false,
 						cache:true,
-						href:'http://www.baidu.com',
+						href:'/detail',
 						onLoad:function(){
 							$('#dg').datagrid('fixDetailRowHeight',index);
 							$('#dg').datagrid('selectRow',index);
-							$('#dg').datagrid('getRowDetail',index).find('form').form('load',row);
+							//$('#dg').datagrid('getRowDetail',index).find('form').form('load',row);
 						}
 					});
 					$('#dg').datagrid('fixDetailRowHeight',index);

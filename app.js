@@ -188,6 +188,9 @@ app.post('/update-volunteer', updateVolunteer);
 app.get('/test', function(req, res){
 	res.render('test');
 });
+app.get('/detail', function(req, res){
+	res.render('detail');
+});
 
 
 

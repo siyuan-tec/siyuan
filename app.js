@@ -65,6 +65,12 @@ app.get('/query', function(req, res) {
 	res.render('query', { result_set: results});
 })
 
+app.get('/importCsv', function(req, res){
+	//TODO
+	var filename;
+	//解析，存数据库
+})
+
 
 //处理登录
 function doLogin(req, res){
@@ -72,7 +78,7 @@ function doLogin(req, res){
 	AV.User.logIn(req.body.logname, req.body.logpass).then(function(user) {
     //登录成功，AV.Cloud.CookieSession 会自动将登录用户信息存储到 cookie
     console.log('signin successfully: %j', user);
-    res.redirect('/index');
+    res.redirect('/query');
   },function(error) {
     //登录失败，跳转到登录页面
     //res.redirect('/login');
